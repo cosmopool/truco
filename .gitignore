@@ -1,0 +1,5 @@
+.cache/
+include/
+lib/
+compile_commands.json
+truco
