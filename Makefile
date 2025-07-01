@@ -1,21 +1,21 @@
 
-TARGET		:= $(notdir $(CURDIR))
-BUILD			:= build
-SOURCES		:= src
-INCLUDES	:= raylib
-LIBS			:= raylib m
+TARGET   := $(notdir $(CURDIR))
+BUILD    := build
+SOURCES  := src
+INCLUDES := raylib
+LIBS     := raylib m
 
 #---------------------------------------------------------------------------------
 # exports
 #---------------------------------------------------------------------------------
 
-export OUTPUT	:= $(CURDIR)/$(TARGET)
+export OUTPUT := $(CURDIR)/$(TARGET)
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
 
-CFLAGS :=	-g -Wall -O2 -ffunction-sections
+CFLAGS := -g -Wall -O2 -ffunction-sections
 CFLAGS += -Wextra
 CFLAGS += -Werror
 CFLAGS += -Wpointer-arith
