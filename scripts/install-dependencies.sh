@@ -3,6 +3,7 @@
 OS=$(uname -s)
 INCLUDE_DIR=include
 LIB_DIR=lib
+DEPS_CACHE_DIR=.deps_cache
 
 setup_raylib() {
   echo "-- Installing raylib dependency"
@@ -24,23 +25,22 @@ setup_raylib() {
   rm -rf "$INCLUDE_DIR"/raylib
   rm "$LIB_DIR"/*raylib*.a
 
-  echo "-- Fetching from: $URL"
   # git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git includes/raylib
   # cd includes/raylib/src
   # make PLATFORM=PLATFORM_DESKTOP
   # mv libraylib.a ../../../libs/
-  if [ ! -f "$INCLUDE_DIR"/raylib.tar.gz ]; then
-    curl -L "$URL" --output "$INCLUDE_DIR"/raylib.tar.gz
+  if [ ! -f "$DEPS_CACHE_DIR"/raylib.tar.gz ]; then
+    echo "-- Fetching from: $URL"
+    curl -L "$URL" --output "$DEPS_CACHE_DIR"/raylib.tar.gz
   fi
 
   echo "-- Extracting files"
-  tar -xf "$INCLUDE_DIR"/raylib.tar.gz || exit
-  mv raylib-5.5*/"$INCLUDE_DIR" "$INCLUDE_DIR"/raylib
-  mv raylib-5.5*/"$LIB_DIR"/*.a "$LIB_DIR"/
+  tar -xf "$DEPS_CACHE_DIR"/raylib.tar.gz || exit
+  mv raylib-5.5*/include "$INCLUDE_DIR"/raylib
+  mv raylib-5.5*/lib/*.a "$LIB_DIR"/
 
   echo "-- Cleanup temp files and directories"
-  rm "$INCLUDE_DIR"/raylib.tar.gz
-  rm -rf raylib-5.5_linux_amd64
+  rm -rf raylib-5.5*
 }
 
 # -------------------------------------------------------------------
@@ -49,5 +49,6 @@ setup_raylib() {
 
 mkdir -p "$INCLUDE_DIR"
 mkdir -p "$LIB_DIR"
+mkdir -p "$DEPS_CACHE_DIR"
 
 setup_raylib
