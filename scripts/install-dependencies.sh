@@ -35,8 +35,8 @@ setup_raylib() {
 
   echo "-- Extracting files"
   tar -xf "$INCLUDE_DIR"/raylib.tar.gz || exit
-  mv raylib-5.5_linux_amd64/"$INCLUDE_DIR" "$INCLUDE_DIR"/raylib
-  mv raylib-5.5_linux_amd64/"$LIB_DIR"/*.a "$LIB_DIR"/
+  mv raylib-5.5*/"$INCLUDE_DIR" "$INCLUDE_DIR"/raylib
+  mv raylib-5.5*/"$LIB_DIR"/*.a "$LIB_DIR"/
 
   echo "-- Cleanup temp files and directories"
   rm "$INCLUDE_DIR"/raylib.tar.gz
