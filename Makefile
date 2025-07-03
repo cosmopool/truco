@@ -4,6 +4,7 @@ BUILD    := build
 SOURCES  := src
 INCLUDES := raylib
 LIBS     := raylib m
+OS       := $(shell uname -s)
 
 #---------------------------------------------------------------------------------
 # exports
@@ -23,6 +24,9 @@ CFLAGS += -Wcast-align
 CFLAGS += -Wunreachable-code
 # include all libraries
 CFLAGS += -L$(CURDIR)/lib
+ifeq ($(OS), Darwin)
+	CFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
+endif
 # include all dependencies folder
 CFLAGS += $(foreach dir,$(INCLUDES),-I$(CURDIR)/include/$(dir))
 CFLAGS += $(foreach library,$(LIBS),-l$(library))

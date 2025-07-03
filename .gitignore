@@ -1,6 +1,7 @@
 .deps_cache/
 .cache/
 include/
+*.dSYM/
 lib/
 compile_commands.json
 truco
