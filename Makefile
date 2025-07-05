@@ -30,6 +30,7 @@ endif
 # include all dependencies folder
 CFLAGS += $(foreach dir,$(INCLUDES),-I$(CURDIR)/include/$(dir))
 CFLAGS += $(foreach library,$(LIBS),-l$(library))
+CFLAGS += -Wl,-rpath,'$(CURDIR)/lib'
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -39,6 +40,11 @@ dependencies:
 	chmod +x ./scripts/install-dependencies.sh
 	./scripts/install-dependencies.sh
 
-debug:
-	$(CC) src/main.c -o $(OUTPUT) $(CFLAGS) 
-	chmod +x $(OUTPUT)
+debug: truco.so
+	$(CC) src/main.c -o $(OUTPUT) $(CFLAGS)
+
+truco.so: 
+	$(CC) src/game.c -o truco.so -fPIC -shared $(CFLAGS)
+
+clean:
+	rm -rf truco truco.so truco.dSYM

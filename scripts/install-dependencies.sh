@@ -1,13 +1,14 @@
 #!/bin/sh
 
+PROJECT_DIR="$(realpath $( cd "$( dirname "$0" )" && pwd )/..)"
 OS=$(uname -s)
-INCLUDE_DIR=include
-LIB_DIR=lib
-DEPS_CACHE_DIR=.deps_cache
+INCLUDE_DIR="$PROJECT_DIR/include"
+LIB_DIR="$PROJECT_DIR/lib"
+DEPS_CACHE_DIR="$PROJECT_DIR/.deps_cache"
 
 setup_raylib() {
   echo "-- Installing raylib dependency"
-
+  
   if [ "$OS" = "Linux" ]; then
     URL=https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz
   elif [ "$OS" = "Darwin" ]; then
@@ -23,24 +24,27 @@ setup_raylib() {
 
   echo "-- Removing old raylib include and library files"
   rm -rf "$INCLUDE_DIR"/raylib
-  rm "$LIB_DIR"/*raylib*.a
+  rm "$LIB_DIR"/*raylib*
 
-  # git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git includes/raylib
-  # cd includes/raylib/src
-  # make PLATFORM=PLATFORM_DESKTOP
-  # mv libraylib.a ../../../libs/
-  if [ ! -f "$DEPS_CACHE_DIR"/raylib.tar.gz ]; then
+  if [ ! -d "$DEPS_CACHE_DIR"/raylib ]; then
     echo "-- Fetching from: $URL"
-    curl -L "$URL" --output "$DEPS_CACHE_DIR"/raylib.tar.gz
+    git clone --depth 1 --branch 5.5 https://github.com/raysan5/raylib.git "$DEPS_CACHE_DIR"/raylib
   fi
 
-  echo "-- Extracting files"
-  tar -xf "$DEPS_CACHE_DIR"/raylib.tar.gz || exit
-  mv raylib-5.5*/include "$INCLUDE_DIR"/raylib
-  mv raylib-5.5*/lib/*.a "$LIB_DIR"/
+  echo "-- Building raylib"
+  cd "$DEPS_CACHE_DIR"/raylib/src
+  make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=SHARED -j3
 
-  echo "-- Cleanup temp files and directories"
-  rm -rf raylib-5.5*
+  # setup dynamic libraries
+  cp libraylib.so.5.5.0 "$LIB_DIR"
+  ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so
+  ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so.550
+
+  # setup header files
+  mkdir -p "$INCLUDE_DIR"/raylib
+  cp raylib.h  "$INCLUDE_DIR"/raylib/
+  cp raymath.h "$INCLUDE_DIR"/raylib/
+  cp rlgl.h    "$INCLUDE_DIR"/raylib/
 }
 
 # -------------------------------------------------------------------

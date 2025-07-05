@@ -5,3 +5,4 @@ include/
 lib/
 compile_commands.json
 truco
+truco.so
