@@ -14,7 +14,8 @@ setup_raylib() {
   elif [ "$OS" = "Darwin" ]; then
     URL=https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz
   else
-    exit "==>> OS ($OS) not suported yet"
+    echo "==>> OS ($OS) not suported yet"
+    exit 1
   fi
 
   if [ -d "$INCLUDE_DIR"/raylib ] && [ -f "$LIB_DIR"/*raylib*.a ]; then 
