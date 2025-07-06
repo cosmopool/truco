@@ -33,7 +33,7 @@ setup_raylib() {
   fi
 
   echo "-- Building raylib"
-  cd "$DEPS_CACHE_DIR"/raylib/src
+  cd "$DEPS_CACHE_DIR"/raylib/src || exit
   make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=SHARED -j3
 
   # setup dynamic libraries
