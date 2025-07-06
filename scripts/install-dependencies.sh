@@ -37,9 +37,15 @@ setup_raylib() {
   make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=SHARED -j3
 
   # setup dynamic libraries
-  cp libraylib.so.5.5.0 "$LIB_DIR"
-  ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so
-  ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so.550
+  if [ "$OS" = "Linux" ]; then
+    cp libraylib.so.5.5.0 "$LIB_DIR"
+    ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so
+    ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so.550
+  elif [ "$OS" = "Darwin" ]; then
+    cp libraylib.5.5.0.dylib "$LIB_DIR"
+    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.so.dylib
+    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.so.550.dylib
+  fi
 
   # setup header files
   mkdir -p "$INCLUDE_DIR"/raylib
