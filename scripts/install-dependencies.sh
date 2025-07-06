@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROJECT_DIR="$(realpath $( cd "$( dirname "$0" )" && pwd )/..)"
+PROJECT_DIR="$(realpath "$( cd "$( dirname "$0" )" && pwd )"/..)"
 OS=$(uname -s)
 INCLUDE_DIR="$PROJECT_DIR/include"
 LIB_DIR="$PROJECT_DIR/lib"
