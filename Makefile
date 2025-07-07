@@ -1,9 +1,6 @@
-
 TARGET   := $(notdir $(CURDIR))
 BUILD    := build
 SOURCES  := src
-INCLUDES := raylib
-LIBS     := raylib m
 OS       := $(shell uname -s)
 
 #---------------------------------------------------------------------------------
@@ -22,15 +19,17 @@ CFLAGS += -Werror
 CFLAGS += -Wpointer-arith
 CFLAGS += -Wcast-align
 CFLAGS += -Wunreachable-code
-# include all libraries
-CFLAGS += -L$(CURDIR)/lib
+CFLAGS += -I$(CURDIR)/include/raylib
+
+# link dynamic libraries for macos and linux
 ifeq ($(OS), Darwin)
-	CFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
+    LDFLAGS += -Wl,-rpath,@executable_path/lib -Wl,-rpath,@executable_path/
+    LDFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
+else
+		LDFLAGS += -Wl,-rpath,'$(CURDIR)/lib'
 endif
-# include all dependencies folder
-CFLAGS += $(foreach dir,$(INCLUDES),-I$(CURDIR)/include/$(dir))
-CFLAGS += $(foreach library,$(LIBS),-l$(library))
-CFLAGS += -Wl,-rpath,'$(CURDIR)/lib'
+LDFLAGS += -L$(CURDIR)/lib
+LDFLAGS += -lraylib -lm
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -41,10 +40,10 @@ dependencies:
 	./scripts/install-dependencies.sh
 
 debug: truco.so
-	$(CC) src/main.c -o $(OUTPUT) $(CFLAGS)
+	$(CC) src/main.c -o $(OUTPUT) $(CFLAGS) $(LDFLAGS)
 
 truco.so: 
-	$(CC) src/game.c -o truco.so -fPIC -shared $(CFLAGS)
+	$(CC) src/game.c -o truco.so -fPIC -shared $(CFLAGS) $(LDFLAGS)
 
 clean:
 	rm -rf truco truco.so truco.dSYM
