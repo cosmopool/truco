@@ -2,6 +2,7 @@
 .cache/
 include/
 *.dSYM/
+.DS_Store
 lib/
 compile_commands.json
 truco
