@@ -43,8 +43,8 @@ setup_raylib() {
     ln -s "$LIB_DIR"/libraylib.so.5.5.0 "$LIB_DIR"/libraylib.so.550
   elif [ "$OS" = "Darwin" ]; then
     cp libraylib.5.5.0.dylib "$LIB_DIR"
-    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.so.dylib
-    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.so.550.dylib
+    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.dylib
+    ln -s "$LIB_DIR"/libraylib.5.5.0.dylib "$LIB_DIR"/libraylib.550.dylib
   fi
 
   # setup header files
