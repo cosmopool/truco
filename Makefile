@@ -43,6 +43,7 @@ debug: truco.so
 	$(CC) src/main.c -o $(OUTPUT) $(CFLAGS) $(LDFLAGS)
 
 truco.so: 
+	rm -rf truco.so truco.dSYM
 	$(CC) src/game.c -o truco.so -fPIC -shared $(CFLAGS) $(LDFLAGS)
 
 clean:
