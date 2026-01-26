@@ -6,12 +6,8 @@ typedef struct {
   char *fps;
 } GameState;
 
-typedef void (*module_init_function)(GameState *state);
-typedef void (*module_update_function)(GameState *state);
-typedef void (*module_draw_function)(GameState *state);
+typedef void (*module_main_function)(GameState *state);
 
-void Game_init(GameState *state);
-void Game_update(GameState *state);
-void Game_draw(GameState *state);
+void Game_main(GameState *state);
 
 #endif // GAME_MAIN_

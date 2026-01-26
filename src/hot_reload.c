@@ -8,6 +8,7 @@
 
 typedef struct {
   void *module;
+  module_main_function main;
   module_init_function init;
   module_update_function update;
   module_draw_function draw;
@@ -22,12 +23,12 @@ int HotReload_RebuildLibrary() {
 
 /// Load the dynamic library containing the game state
 void *HotReload_LoadLibrary(char *libray_name) {
-  printf("-->> Loading game module\n");
+  printf("-->> Loading game module: %s\n", libray_name);
   return dlopen(libray_name, RTLD_NOW);
 }
 
 void *HotReload_LoadSymbol(void *loaded_library, char *symbol_name) {
-  printf("-->> Searching for symbol in module\n");
+  printf("-->> Searching for symbol in module: %s\n", symbol_name);
   return dlsym(loaded_library, symbol_name);
 }
 
@@ -49,25 +50,27 @@ void HotReload_LoadGameModule(GameHotReloadModule_t *game_module) {
     exit(1);
   }
 
-  game_module->init = HotReload_LoadSymbol(game_module->module, "Game_init");
-  if (!game_module->init) {
-    fprintf(stderr, "ERROR: could not find symbol 'Game_init': %s",
-            dlerror());
+  game_module->main = HotReload_LoadSymbol(game_module->module, "Game_main");
+  if (!game_module->main) {
+    fprintf(stderr, "ERROR: could not find symbol 'Game_main': %s", dlerror());
     exit(1);
   }
 
-  game_module->update =
-      HotReload_LoadSymbol(game_module->module, "Game_update");
+  game_module->init = HotReload_LoadSymbol(game_module->module, "Game_init");
+  if (!game_module->init) {
+    fprintf(stderr, "ERROR: could not find symbol 'Game_init': %s", dlerror());
+    exit(1);
+  }
+
+  game_module->update = HotReload_LoadSymbol(game_module->module, "Game_update");
   if (!game_module->update) {
-    fprintf(stderr, "ERROR: could not find symbol 'Game_update': %s",
-            dlerror());
+    fprintf(stderr, "ERROR: could not find symbol 'Game_update': %s", dlerror());
     exit(1);
   }
 
   game_module->draw = HotReload_LoadSymbol(game_module->module, "Game_draw");
   if (!game_module->draw) {
-    fprintf(stderr, "ERROR: could not find symbol 'Game_draw': %s",
-            dlerror());
+    fprintf(stderr, "ERROR: could not find symbol 'Game_draw': %s", dlerror());
     exit(1);
   }
 }

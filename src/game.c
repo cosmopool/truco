@@ -5,6 +5,16 @@
 
 #include <stdlib.h>
 
+void Game_main(Arena *arena, GameState *prev_state) {
+  _logInfo("Reloading main");
+  assert(arena);
+  GameState *state = {0};
+  if (!state) {
+    state = arena_alloc(arena, 1024 * 1024 * 5);
+  }
+  state = prev_state;
+}
+
 void Game_init(GameState *state) {
   _logInfo("Initializing game module");
 
