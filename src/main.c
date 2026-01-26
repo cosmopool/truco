@@ -1,20 +1,32 @@
+#include "game.h"
 #include "hot_reload.c"
 #include "logger.c"
+
+#define ARENA_IMPLEMENTATION
+#include "arena.h"
 #include "raylib.h"
 
 const int screenWidth = 800;
 const int screenHeight = 450;
 
+static Arena state_arena = {0};
+static Arena default_arena = {0};
+
 int main(void) {
   // Initialization
   //--------------------------------------------------------------------------------------
+  // pre-allocate 5mb
+  arena_alloc(&default_arena, 5 * 1024 * 1024);
+  arena_reset(&default_arena);
+
   InitWindow(screenWidth, screenHeight, "truco game");
   SetTargetFPS(60);
 
-  GameState state = {0};
+  GameState *state = arena_alloc(&state_arena, 1 * 1024 * 1024);
+  arena_reset(&state_arena);
   GameHotReloadModule_t game = {0};
   HotReload_LoadGameModule(&game);
-  game.init(&state);
+  game.init(&default_arena, state);
   //--------------------------------------------------------------------------------------
 
   while (!WindowShouldClose()) {
@@ -25,7 +37,7 @@ int main(void) {
       HotReload_LoadGameModule(&game);
     }
 
-    game.update(&state);
+    game.update(&default_arena, state);
     //------------------------------------------------------------------------------------
 
     // Draw
@@ -33,7 +45,7 @@ int main(void) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    game.draw(&state);
+    game.draw(*state);
 
     EndDrawing();
     //------------------------------------------------------------------------------------
@@ -41,6 +53,7 @@ int main(void) {
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
+  arena_free(&default_arena);
   HotReload_CloseLibrary(game.module);
   CloseWindow();
   //--------------------------------------------------------------------------------------

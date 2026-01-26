@@ -20,6 +20,7 @@ CFLAGS += -Wpointer-arith
 CFLAGS += -Wcast-align
 CFLAGS += -Wunreachable-code
 CFLAGS += -I$(CURDIR)/include/raylib
+CFLAGS += -I$(CURDIR)/include/arena
 
 # link dynamic libraries for macos and linux
 ifeq ($(OS), Darwin)
