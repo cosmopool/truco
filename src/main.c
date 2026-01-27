@@ -22,11 +22,11 @@ int main(void) {
   InitWindow(screenWidth, screenHeight, "truco game");
   SetTargetFPS(60);
 
-  GameState *state = arena_alloc(&state_arena, 1 * 1024 * 1024);
-  arena_reset(&state_arena);
   GameHotReloadModule_t game = {0};
   HotReload_LoadGameModule(&game);
-  game.init(&default_arena, state);
+
+  void *game_state = NULL;
+  game.init(&state_arena, &game_state);
   //--------------------------------------------------------------------------------------
 
   while (!WindowShouldClose()) {
@@ -35,9 +35,16 @@ int main(void) {
     if (IsKeyPressed(KEY_R)) {
       HotReload_RebuildLibrary();
       HotReload_LoadGameModule(&game);
+
+      if (IsKeyDown(KEY_LEFT_SHIFT)) {
+        _log("Main", "HOT RESTART");
+        game.init(&state_arena, &game_state);
+      } else {
+        _log("Main", "HOT RELOAD");
+      }
     }
 
-    game.update(&default_arena, state);
+    game.update(&state_arena, game_state);
     //------------------------------------------------------------------------------------
 
     // Draw
@@ -45,7 +52,7 @@ int main(void) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    game.draw(*state);
+    game.draw(&state_arena, game_state);
 
     EndDrawing();
     //------------------------------------------------------------------------------------
@@ -54,6 +61,7 @@ int main(void) {
   // De-Initialization
   //--------------------------------------------------------------------------------------
   arena_free(&default_arena);
+  arena_free(&state_arena);
   HotReload_CloseLibrary(game.module);
   CloseWindow();
   //--------------------------------------------------------------------------------------
