@@ -39,6 +39,7 @@ void Game_update(Arena *arena, void *game_state) {
 }
 
 void Game_draw(Arena *arena, void *game_state) {
+  ClearBackground(RAYWHITE);
   (void)arena;
   GameState *state = game_state;
   DrawText(state->fps, 0, 0, 20, BLACK);
