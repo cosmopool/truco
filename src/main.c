@@ -10,15 +10,10 @@ const int screenWidth = 800;
 const int screenHeight = 450;
 
 static Arena state_arena = {0};
-static Arena default_arena = {0};
 
 int main(void) {
   // Initialization
   //--------------------------------------------------------------------------------------
-  // pre-allocate 5mb
-  arena_alloc(&default_arena, 5 * 1024 * 1024);
-  arena_reset(&default_arena);
-
   InitWindow(screenWidth, screenHeight, "truco game");
   SetTargetFPS(60);
 
@@ -60,7 +55,6 @@ int main(void) {
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
-  arena_free(&default_arena);
   arena_free(&state_arena);
   HotReload_CloseLibrary(game.module);
   CloseWindow();
