@@ -19,7 +19,7 @@ void Game_init(Arena *arena, void **game_state) {
     arena_reset(arena);
   }
   // allocate and initialize GameState structure current size
-  GameState *new_state = arena_alloc(arena, 4096);
+  GameState *new_state = arena_alloc(arena, 1 * 1024 * 1024);
   new_state->msg = "first msg";
   new_state->fps = arena_alloc(arena, sizeof(char) * 10);
   *game_state = new_state;
