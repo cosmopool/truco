@@ -92,6 +92,7 @@ void Game_draw(Arena *arena, void *game_state) {
   u32 screenWidth = GetScreenWidth();
   u32 screenHeight = GetScreenHeight();
 
+  // draw cards
   for (i32 i = CARD_COUNT; i >= 0; i--) {
     u8 idx = state->cards_order[i];
     Card card = state->cards[idx];
@@ -108,6 +109,21 @@ void Game_draw(Arena *arena, void *game_state) {
       continue;
     }
 
-    Card_drawCardAtIndex(idx, *state);
+    u32 r = 80 - (int)(20 * idx);
+    u32 g = 120 - (int)(20 * idx);
+    u32 b = 180 - (int)(20 * idx);
+    DrawRectangle(rec.x, rec.y, rec.width, rec.height,
+                  CLITERAL(Color){r, g, b, 255});
+
+    Color outline_color = RED;
+    if (idx == state->card_grabbed) {
+      outline_color = GREEN;
+    }
+    Card_drawCardOutline(rec, outline_color);
+
+    // card number
+    char buff[64];
+    sprintf(buff, "%d", idx);
+    DrawText(buff, card.x, card.y, 20, WHITE);
   }
 }

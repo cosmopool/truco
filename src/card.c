@@ -13,19 +13,11 @@ Rectangle Card_cardToRectangle(Card card) {
   return r;
 }
 
-void Card_drawCardAtIndex(u32 idx, GameState state) {
-  Card card = state.cards[idx];
-  u32 r = 80 - (int)(20 * idx);
-  u32 g = 120 - (int)(20 * idx);
-  u32 b = 180 - (int)(20 * idx);
-  Rectangle rec = Card_cardToRectangle(card);
-  DrawRectangle(rec.x, rec.y, rec.width, rec.height,
-                CLITERAL(Color){r, g, b, 255});
-
-  // card number
-  char buff[16];
-  sprintf(buff, "%d", idx);
-  DrawText(buff, card.x, card.y, 20, WHITE);
+void Card_drawCardOutline(Rectangle r, Color color) {
+  DrawLine(r.x, r.y, r.x + r.width, r.y, color);
+  DrawLine(r.x, r.y + r.height, r.x + r.width, r.y + r.height, color);
+  DrawLine(r.x, r.y + r.height, r.x, r.y, color);
+  DrawLine(r.x + r.width, r.y, r.x + r.width, r.y + r.height, color);
 }
 
 /// Move card at `idx` to position 0, shifting all other elements to the right
