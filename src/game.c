@@ -89,7 +89,25 @@ void Game_draw(Arena *arena, void *game_state) {
   DrawText(state->fps, 0, 0, 20, BLACK);
   DrawText(state->msg, 0, 50, 20, BLACK);
 
+  u32 screenWidth = GetScreenWidth();
+  u32 screenHeight = GetScreenHeight();
+
   for (i32 i = CARD_COUNT; i >= 0; i--) {
-    Card_drawCardAtIndex(state->cards_order[i], *state);
+    u8 idx = state->cards_order[i];
+    Card card = state->cards[idx];
+    Rectangle rec = Card_cardToRectangle(card);
+
+    // no need to draw because is not visible
+    if (rec.x > screenWidth) {
+      continue;
+    } else if (rec.x + rec.width < 0) {
+      continue;
+    } else if (rec.y > screenHeight) {
+      continue;
+    } else if (rec.y + rec.height < 0) {
+      continue;
+    }
+
+    Card_drawCardAtIndex(idx, *state);
   }
 }
