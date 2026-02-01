@@ -65,7 +65,7 @@ void Game_update(Arena *arena, void *game_state) {
         sprintf(buf, "-- Grabbed card: %d", i);
         _logDebug(buf);
         state->card_grabbed = idx;
-        Card_MoveCardToTheTop(i, state);
+        Card_MoveToTheTop(i, state);
         break;
       }
     }
@@ -96,7 +96,7 @@ void Game_draw(Arena *arena, void *game_state) {
   for (i32 i = CARD_COUNT; i >= 0; i--) {
     u8 idx = state->cards_order[i];
     Card card = state->cards[idx];
-    Rectangle rec = Card_cardToRectangle(card);
+    Rectangle rec = Card_ToRectangle(card);
 
     // no need to draw because is not visible
     if (rec.x > screenWidth) {
@@ -119,7 +119,7 @@ void Game_draw(Arena *arena, void *game_state) {
     if (idx == state->card_grabbed) {
       outline_color = GREEN;
     }
-    Card_drawCardOutline(rec, outline_color);
+    Card_DrawOutline(rec, outline_color);
 
     // card number
     char buff[64];

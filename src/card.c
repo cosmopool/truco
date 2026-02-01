@@ -8,12 +8,12 @@
 #include "base_types.h"
 #include "game_state.h"
 
-Rectangle Card_cardToRectangle(Card card) {
+Rectangle Card_ToRectangle(Card card) {
   Rectangle r = {.x = card.x, .y = card.y, .height = 100, .width = 50};
   return r;
 }
 
-void Card_drawCardOutline(Rectangle r, Color color) {
+void Card_DrawOutline(Rectangle r, Color color) {
   DrawLine(r.x, r.y, r.x + r.width, r.y, color);
   DrawLine(r.x, r.y + r.height, r.x + r.width, r.y + r.height, color);
   DrawLine(r.x, r.y + r.height, r.x, r.y, color);
@@ -23,7 +23,7 @@ void Card_drawCardOutline(Rectangle r, Color color) {
 /// Move card at `idx` to position 0, shifting all other elements to the right
 ///
 /// `idx`: index of the card to move to the top of the `card_order` stack
-void Card_MoveCardToTheTop(u8 idx, GameState *state) {
+void Card_MoveToTheTop(u8 idx, GameState *state) {
   assert(idx < CARD_COUNT);
   assert(idx * sizeof(u8) <= sizeof(state->cards_order));
 
