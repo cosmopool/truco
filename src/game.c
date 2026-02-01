@@ -1,5 +1,5 @@
-#include "card.c"
 #include "game.h"
+#include "card.c"
 #include "game_state.h"
 #include "logger.c"
 
@@ -24,18 +24,17 @@ void Game_init(Arena *arena, void **game_state) {
   new_state->msg = "first msg";
   new_state->fps = arena_alloc(arena, sizeof(char) * 10);
   new_state->card_grabbed = -1;
-  for (u32 i = 0; i < 3; i++) {
+  for (u32 i = 0; i < CARD_COUNT; i++) {
     const u32 card_width = 50;
-    // const u32 card_height = 100;
-    const u32 offset = 200;
+    const u32 offset = 10;
     const u32 space = 10;
-    // const int screen_width = 800;
 
     Card card;
     card.x = offset + (i * (card_width + space));
     card.y = 100;
 
     new_state->cards[i] = card;
+    new_state->cards_order[i] = i;
   }
   *game_state = new_state;
 
@@ -55,16 +54,18 @@ void Game_update(Arena *arena, void *game_state) {
 
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
     Rectangle card;
-    for (u32 i = 0; i < 3; i++) {
+    for (u32 i = 0; i < CARD_COUNT; i++) {
+      u8 idx = state->cards_order[i];
       card.height = 100;
       card.width = 50;
-      card.x = state->cards[i].x;
-      card.y = state->cards[i].y;
+      card.x = state->cards[idx].x;
+      card.y = state->cards[idx].y;
       if (CheckCollisionPointRec(mouse_pos, card)) {
         char buf[32];
         sprintf(buf, "-- Grabbed card: %d", i);
         _logDebug(buf);
-        state->card_grabbed = i;
+        state->card_grabbed = idx;
+        Card_MoveCardToTheTop(i, state);
         break;
       }
     }
@@ -88,14 +89,7 @@ void Game_draw(Arena *arena, void *game_state) {
   DrawText(state->fps, 0, 0, 20, BLACK);
   DrawText(state->msg, 0, 50, 20, BLACK);
 
-  for (u32 i = 0; i < 3; i++) {
-    if ((i32)i == state->card_grabbed) {
-      continue;
-    }
-    Card_drawCardAtIndex(i, *state);
-  }
-
-  if (state->card_grabbed >= 0) {
-    Card_drawCardAtIndex(state->card_grabbed, *state);
+  for (i32 i = CARD_COUNT; i >= 0; i--) {
+    Card_drawCardAtIndex(state->cards_order[i], *state);
   }
 }
